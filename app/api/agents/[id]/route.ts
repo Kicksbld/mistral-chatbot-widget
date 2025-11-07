@@ -99,7 +99,7 @@ export async function PATCH(
 
     if (error || !agent) {
       return NextResponse.json(
-        { error: 'Failed to update agent', details: error.message },
+        { error: 'Failed to update agent', details: error?.message },
         { status: 500 }
       )
     }
