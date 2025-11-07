@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { Agent, CreateAgentInput } from '@/lib/types'
+import { DEFAULT_MODEL } from '@/lib/types'
 
 interface CreateAgentModalProps {
   isOpen: boolean
@@ -18,7 +19,7 @@ export default function CreateAgentModal({
     name: '',
     role: 'assistant',
     instructions: '',
-    model: 'mistral-small-2402',
+    model: DEFAULT_MODEL,
     temperature: 0.7,
     max_tokens: 1000,
     top_p: 1.0,
@@ -49,7 +50,7 @@ export default function CreateAgentModal({
         name: '',
         role: 'assistant',
         instructions: '',
-        model: 'mistral-small-2402',
+        model: DEFAULT_MODEL,
         temperature: 0.7,
         max_tokens: 1000,
         top_p: 1.0,
@@ -123,7 +124,7 @@ export default function CreateAgentModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="model" className="block text-sm font-medium text-gray-700 mb-2">
-                Modèle Mistral
+                Modèle Mistral (Gratuit uniquement)
               </label>
               <select
                 id="model"
@@ -131,23 +132,13 @@ export default function CreateAgentModal({
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <optgroup label="Modèles Open-Source (Gratuits)">
-                  <option value="open-mistral-7b">Open Mistral 7B (gratuit, rapide)</option>
-                  <option value="mistral-small-2402">Mistral Small 2402 (gratuit, rapide)</option>
-                  <option value="open-mixtral-8x22b">Open Mixtral 8x22B (gratuit, très performant)</option>
-                </optgroup>
-                <optgroup label="Modèles Optimisés (Payants)">
-                  <option value="mistral-small-latest">Mistral Small (rapide)</option>
-                  <option value="mistral-medium-latest">Mistral Medium (équilibré)</option>
-                  <option value="mistral-large-latest">Mistral Large (puissant)</option>
-                </optgroup>
-                <optgroup label="Modèles Spécialisés">
-                  <option value="mistral-tiny">Mistral Tiny (très économique)</option>
-                  <option value="codestral-latest">Codestral (spécialisé code)</option>
-                </optgroup>
+                <option value="open-mistral-7b">Mistral 7B (rapide et léger)</option>
+                <option value="open-mixtral-8x7b">Mixtral 8x7B (équilibré)</option>
+                <option value="mistral-small-2402">Mistral Small (performant)</option>
+                <option value="codestral-latest">Codestral (spécialisé code)</option>
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                Les modèles Open-Source ont des limites plus généreuses
+                Tous les modèles sont gratuits
               </p>
             </div>
 

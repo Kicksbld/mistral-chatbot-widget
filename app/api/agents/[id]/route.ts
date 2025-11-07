@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import type { UpdateAgentInput } from '@/lib/types'
+import { ALLOWED_FREE_MODELS } from '@/lib/types'
 
 // GET /api/agents/:id - Get a specific agent
 export async function GET(
@@ -68,6 +69,14 @@ export async function PATCH(
     }
 
     const body: UpdateAgentInput = await request.json()
+
+    // Validate that only free models are used
+    if (body.model !== undefined && !ALLOWED_FREE_MODELS.includes(body.model as any)) {
+      return NextResponse.json(
+        { error: `Model not allowed. Only free models are supported: ${ALLOWED_FREE_MODELS.join(', ')}` },
+        { status: 400 }
+      )
+    }
 
     // Build update object with only provided fields
     const updateData: any = {}

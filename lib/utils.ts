@@ -28,15 +28,7 @@ export function formatNumber(num: number): string {
   return new Intl.NumberFormat('fr-FR').format(num)
 }
 
-// Calculate cost based on tokens (approximate Mistral pricing)
+// All models are now free - no cost calculation needed
 export function calculateCost(tokens: number, model: string): number {
-  // Approximate pricing per 1M tokens
-  const pricing: Record<string, number> = {
-    'mistral-small-latest': 1.0,
-    'mistral-medium-latest': 2.7,
-    'mistral-large-latest': 8.0,
-  }
-
-  const pricePerMillion = pricing[model] || 1.0
-  return (tokens / 1_000_000) * pricePerMillion
+  return 0 // All free models
 }

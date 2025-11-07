@@ -9,6 +9,18 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+// Helper function to create CORS-enabled responses
+function corsResponse(data: any, status: number = 200) {
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, x-agent-api-key',
+    },
+  })
+}
+
 // POST /api/widget/chat - Handle chat messages from embedded widget
 export async function POST(request: NextRequest) {
   const startTime = Date.now()
@@ -19,10 +31,7 @@ export async function POST(request: NextRequest) {
     console.log('API Key received:', apiKey)
 
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'API key is required' },
-        { status: 401 }
-      )
+      return corsResponse({ error: 'API key is required' }, 401)
     }
 
     // Parse request body
@@ -30,10 +39,7 @@ export async function POST(request: NextRequest) {
     console.log('Request body:', body)
 
     if (!body.message || !body.sessionId) {
-      return NextResponse.json(
-        { error: 'Message and sessionId are required' },
-        { status: 400 }
-      )
+      return corsResponse({ error: 'Message and sessionId are required' }, 400)
     }
 
     // Find agent by API key
@@ -48,10 +54,7 @@ export async function POST(request: NextRequest) {
     console.log('Agent error:', agentError)
 
     if (agentError || !agent) {
-      return NextResponse.json(
-        { error: 'Invalid API key or agent not found' },
-        { status: 401 }
-      )
+      return corsResponse({ error: 'Invalid API key or agent not found' }, 401)
     }
 
     // Find or create conversation
@@ -70,10 +73,7 @@ export async function POST(request: NextRequest) {
         .single()
 
       if (convError || !newConversation) {
-        return NextResponse.json(
-          { error: 'Failed to create conversation' },
-          { status: 500 }
-        )
+        return corsResponse({ error: 'Failed to create conversation' }, 500)
       }
 
       conversationId = newConversation.id
@@ -91,10 +91,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (userMessageError) {
-      return NextResponse.json(
-        { error: 'Failed to save user message' },
-        { status: 500 }
-      )
+      return corsResponse({ error: 'Failed to save user message' }, 500)
     }
 
     // Get conversation history (last 10 messages for context)
@@ -173,10 +170,7 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (assistantMessageError) {
-      return NextResponse.json(
-        { error: 'Failed to save assistant message' },
-        { status: 500 }
-      )
+      return corsResponse({ error: 'Failed to save assistant message' }, 500)
     }
 
     const response: ChatResponse = {
@@ -186,7 +180,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('Sending response:', response)
-    return NextResponse.json(response)
+    return corsResponse(response)
   } catch (error: any) {
     console.error('Chat API error:', error)
     console.error('Error stack:', error.stack)
@@ -198,28 +192,28 @@ export async function POST(request: NextRequest) {
 
     // Handle specific Mistral API errors
     if (error.message?.includes('Status 429')) {
-      return NextResponse.json(
+      return corsResponse(
         {
           error: 'Le quota Mistral AI a été dépassé. Veuillez réessayer dans quelques instants.',
           details: 'Rate limit exceeded'
         },
-        { status: 429 }
+        429
       )
     }
 
     if (error.message?.includes('API error occurred')) {
-      return NextResponse.json(
+      return corsResponse(
         {
           error: 'Erreur de l\'API Mistral AI. Vérifiez votre clé API et votre quota.',
           details: error.message
         },
-        { status: 500 }
+        500
       )
     }
 
-    return NextResponse.json(
+    return corsResponse(
       { error: 'Internal server error', details: error.message },
-      { status: 500 }
+      500
     )
   }
 }

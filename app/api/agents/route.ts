@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { generateApiKey } from '@/lib/utils'
 import type { CreateAgentInput } from '@/lib/types'
+import { ALLOWED_FREE_MODELS, DEFAULT_MODEL } from '@/lib/types'
 
 // GET /api/agents - List all agents for the authenticated user
 export async function GET() {
@@ -72,6 +73,16 @@ export async function POST(request: NextRequest) {
     // Generate unique API key for the agent
     const apiKey = generateApiKey()
 
+    // Validate that only free models are used
+    const selectedModel = body.model || DEFAULT_MODEL
+
+    if (!ALLOWED_FREE_MODELS.includes(selectedModel as any)) {
+      return NextResponse.json(
+        { error: `Model not allowed. Only free models are supported: ${ALLOWED_FREE_MODELS.join(', ')}` },
+        { status: 400 }
+      )
+    }
+
     const { data: agent, error } = await supabase
       .from('agents')
       .insert({
@@ -79,7 +90,7 @@ export async function POST(request: NextRequest) {
         name: body.name,
         role: body.role || 'assistant',
         instructions: body.instructions || null,
-        model: body.model || 'mistral-small-latest',
+        model: selectedModel,
         temperature: body.temperature || 0.7,
         max_tokens: body.max_tokens || 1000,
         top_p: body.top_p || 1.0,

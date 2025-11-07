@@ -11,7 +11,7 @@ Application SaaS complète pour créer et intégrer des agents conversationnels 
 
 - ✅ **Interface Admin complète** : Dashboard pour créer et gérer vos agents
 - ✅ **Authentification sécurisée** : Supabase Auth avec Row Level Security
-- ✅ **IA Mistral puissante** : Intégration des modèles Mistral (small, medium, large)
+- ✅ **IA Mistral gratuite** : Intégration des modèles Mistral gratuits (7B, 8x7B, Small, Codestral)
 - ✅ **Widget embeddable** : Code JavaScript simple à intégrer sur n'importe quel site
 - ✅ **Configuration flexible** : Personnalisez le comportement de chaque agent
 - ✅ **Logs et statistiques** : Suivez les conversations et analysez les performances
@@ -118,7 +118,7 @@ chatbot-widget/
 3. Configurez votre agent :
    - Nom et rôle
    - Instructions système
-   - Modèle Mistral (small/medium/large)
+   - Modèle Mistral gratuit (7B, 8x7B, Small, Codestral)
    - Paramètres (température, max tokens)
 
 ### Intégrer le widget

@@ -1,3 +1,16 @@
+// Allowed free models configuration
+// Note: Using current model names as of November 2025
+export const ALLOWED_FREE_MODELS = [
+  'open-mistral-7b',      // Mistral 7B - Fast and lightweight
+  'open-mixtral-8x7b',    // Mixtral 8x7B - Balanced (deprecated, will be removed 2024-11-30)
+  'mistral-small-2402',   // Mistral Small - Powerful
+  'codestral-latest'      // Codestral - Code specialized
+] as const
+
+export type AllowedModel = typeof ALLOWED_FREE_MODELS[number]
+
+export const DEFAULT_MODEL: AllowedModel = 'open-mistral-7b'
+
 // Database types
 export interface Agent {
   id: string
